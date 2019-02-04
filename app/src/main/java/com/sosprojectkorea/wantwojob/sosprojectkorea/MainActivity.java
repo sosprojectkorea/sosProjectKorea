@@ -1,5 +1,6 @@
 package com.sosprojectkorea.wantwojob.sosprojectkorea;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,14 +13,37 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private EditText Input_id;
+    private EditText Input_password;
+    private TextView Text_warning;
+    private Button Login_button;
+    private int counter = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Input_id = (EditText) findViewById(R.id.input_id);
+        Input_password = (EditText) findViewById(R.id.input_password);
+        Text_warning = (TextView) findViewById(R.id.text_warning);
+        Login_button = (Button) findViewById(R.id.login_button);
+
+        Text_warning.setText("No. of attempts remaining : 5");
+        Login_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                validate(Input_id.getText().toString(), Input_password.getText().toString());
+            }
+        });
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -42,6 +66,20 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    private void validate(String userName, String userPassword) {
+        if(userName.equals("Admin") && userPassword.equals("1234")) {
+            Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+            startActivity(intent);
+        }else{
+            counter = counter - 1;
+
+            Text_warning.setText("No. of attempts remaining : " + String.valueOf(counter));
+
+            if(counter == 0){
+                Input_id.setEnabled(false);
+            }
+        }
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
